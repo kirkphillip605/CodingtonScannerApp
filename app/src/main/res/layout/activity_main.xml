@@ -146,7 +146,7 @@
                         android:layout_height="match_parent"
                         android:scaleType="centerCrop"
                         android:src="@drawable/hero_card_placeholder"
-                        tools:ignore="ContentDescription" />
+                        android:contentDescription="@string/content_desc_hero_image" />
 
                     <!-- Gradient Overlay -->
                     <View
@@ -263,8 +263,10 @@
                 android:textSize="11sp"
                 android:textStyle="bold"
                 android:background="@drawable/bg_live_badge"
-                android:paddingHorizontal="10dp"
-                android:paddingVertical="4dp" />
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp" />
         </LinearLayout>
 
         <!-- Controls Row -->
@@ -356,7 +358,7 @@
                     android:layout_height="20dp"
                     android:layout_marginStart="6dp"
                     android:src="@drawable/ic_document"
-                    tools:ignore="ContentDescription" />
+                    android:contentDescription="@string/content_desc_ten_codes_icon" />
             </LinearLayout>
         </LinearLayout>
 

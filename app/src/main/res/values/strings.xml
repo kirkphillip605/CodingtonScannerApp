@@ -21,4 +21,6 @@
     <string name="content_desc_speaker">Volume</string>
     <string name="content_desc_refresh">Refresh stream</string>
     <string name="content_desc_play_pause">Play or Pause</string>
+    <string name="content_desc_hero_image">Watertown Police Department building and vehicle</string>
+    <string name="content_desc_ten_codes_icon">View 10-codes reference</string>
 </resources>
