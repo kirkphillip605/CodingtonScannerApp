@@ -93,11 +93,11 @@ class AudioStreamService : Service() {
     }
 
     fun stop() {
-        stopForeground(STOP_FOREGROUND_REMOVE)
-        stopSelf()
         player?.stop()
         player?.release()
         player = null
+        stopForeground(STOP_FOREGROUND_REMOVE)
+        stopSelf()
     }
 
     fun isPlaying(): Boolean {
