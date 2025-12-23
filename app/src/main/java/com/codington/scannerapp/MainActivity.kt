@@ -167,12 +167,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun exitApp() {
-        // Stop the service
+        // Stop the service (this will handle cleanup)
         audioService?.stop()
-        
-        // Stop the service completely
-        val intent = Intent(this, AudioStreamService::class.java)
-        stopService(intent)
         
         // Unbind from service
         if (serviceBound) {
@@ -180,10 +176,8 @@ class MainActivity : AppCompatActivity() {
             serviceBound = false
         }
         
-        // Finish the activity
+        // Finish the activity and exit the app completely
         finish()
-        
-        // Exit the app completely
         finishAffinity()
     }
 }
