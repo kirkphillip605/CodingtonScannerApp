@@ -8,4 +8,20 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="red">#FFF44336</color>
+    
+    <!-- App theme colors -->
+    <color name="background_dark">#070B14</color>
+    <color name="background_dark_end">#0A1020</color>
+    <color name="translucent_white_06">#0FFFFFFF</color>
+    <color name="translucent_white_08">#14FFFFFF</color>
+    <color name="translucent_white_15">#26FFFFFF</color>
+    <color name="translucent_white_18">#2EFFFFFF</color>
+    <color name="muted_gray">#8A8A9F</color>
+    <color name="live_red">#D32020</color>
+    <color name="live_red_dark">#B11212</color>
+    <color name="player_red">#E53935</color>
+    <color name="progress_track">#26FFFFFF</color>
+    <color name="card_shadow">#73000000</color>
+    <color name="text_muted">#B0B0C0</color>
+    <color name="header_separator">#1AFFFFFF</color>
 </resources>

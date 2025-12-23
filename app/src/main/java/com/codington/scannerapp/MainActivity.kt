@@ -8,20 +8,33 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
-import android.widget.Button
+import android.view.View
+import android.view.WindowManager
+import android.widget.FrameLayout
+import android.widget.ImageButton
+import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.SeekBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.media3.common.Player
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var playPauseButton: Button
-    private lateinit var exitButton: Button
+    private lateinit var playPauseButton: FrameLayout
+    private lateinit var playPauseIcon: ImageView
+    private lateinit var exitButton: FrameLayout
     private lateinit var seekBar: SeekBar
     private lateinit var currentTimeText: TextView
-    private lateinit var totalTimeText: TextView
     private lateinit var streamStatusText: TextView
+    private lateinit var refreshButton: FrameLayout
+    private lateinit var speakerButton: ImageButton
+    private lateinit var tenCodesButton: LinearLayout
+    private lateinit var liveDot: View
+    private lateinit var liveIndicator: LinearLayout
+    private lateinit var liveBadge: TextView
 
     private var audioService: AudioStreamService? = null
     private var serviceBound = false
@@ -31,6 +44,18 @@ class MainActivity : AppCompatActivity() {
         override fun run() {
             updateUI()
             handler.postDelayed(this, 1000)
+        }
+    }
+    
+    // Live dot blinking animation
+    private val blinkRunnable = object : Runnable {
+        override fun run() {
+            if (audioService?.isPlaying() == true) {
+                liveDot.visibility = if (liveDot.visibility == View.VISIBLE) View.INVISIBLE else View.VISIBLE
+            } else {
+                liveDot.visibility = View.VISIBLE
+            }
+            handler.postDelayed(this, 800)
         }
     }
 
@@ -54,6 +79,9 @@ class MainActivity : AppCompatActivity() {
                 }
             })
             
+            // Auto-play on launch
+            audioService?.play()
+            
             updateUI()
         }
 
@@ -65,15 +93,32 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        
+        // Set up edge-to-edge display
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+        
+        // Make status bar icons light (for dark background)
+        WindowInsetsControllerCompat(window, window.decorView).apply {
+            isAppearanceLightStatusBars = false
+            isAppearanceLightNavigationBars = false
+        }
+        
         setContentView(R.layout.activity_main)
 
         // Initialize views
         playPauseButton = findViewById(R.id.playPauseButton)
+        playPauseIcon = findViewById(R.id.playPauseIcon)
         exitButton = findViewById(R.id.exitButton)
         seekBar = findViewById(R.id.seekBar)
         currentTimeText = findViewById(R.id.currentTime)
-        totalTimeText = findViewById(R.id.totalTime)
         streamStatusText = findViewById(R.id.streamStatusText)
+        refreshButton = findViewById(R.id.refreshButton)
+        speakerButton = findViewById(R.id.speakerButton)
+        tenCodesButton = findViewById(R.id.tenCodesButton)
+        liveDot = findViewById(R.id.liveDot)
+        liveIndicator = findViewById(R.id.liveIndicator)
+        liveBadge = findViewById(R.id.liveBadge)
 
         // Set up click listeners
         playPauseButton.setOnClickListener {
@@ -88,6 +133,19 @@ class MainActivity : AppCompatActivity() {
 
         exitButton.setOnClickListener {
             exitApp()
+        }
+        
+        refreshButton.setOnClickListener {
+            // Restart the stream
+            audioService?.restart()
+        }
+        
+        speakerButton.setOnClickListener {
+            // Volume control could be added here
+        }
+        
+        tenCodesButton.setOnClickListener {
+            // 10-Codes functionality could be added here
         }
 
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
@@ -110,11 +168,13 @@ class MainActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         handler.post(updateRunnable)
+        handler.post(blinkRunnable)
     }
 
     override fun onStop() {
         super.onStop()
         handler.removeCallbacks(updateRunnable)
+        handler.removeCallbacks(blinkRunnable)
     }
 
     override fun onDestroy() {
@@ -133,12 +193,10 @@ class MainActivity : AppCompatActivity() {
             currentTimeText.text = formatTime(currentPosition)
             
             if (duration > 0) {
-                totalTimeText.text = formatTime(duration)
                 seekBar.max = duration.toInt()
                 seekBar.progress = currentPosition.toInt()
                 seekBar.isEnabled = true
             } else {
-                totalTimeText.text = "--:--"
                 seekBar.isEnabled = false
             }
 
@@ -156,7 +214,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updatePlayPauseButton(isPlaying: Boolean) {
-        playPauseButton.text = if (isPlaying) getString(R.string.pause) else getString(R.string.play)
+        playPauseIcon.setImageResource(if (isPlaying) R.drawable.ic_pause else R.drawable.ic_play)
     }
 
     private fun formatTime(timeMs: Long): String {
